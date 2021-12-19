@@ -19,7 +19,7 @@
 #define SWIFT_BASIC_MALLOC_H
 
 #include <cassert>
-#if defined(_WIN32)
+#if defined(_WIN32) || defined(__SWITCH__)
 #include <malloc.h>
 #else
 #include <cstdlib>
@@ -38,6 +38,9 @@ inline void *AlignedAlloc(size_t size, size_t align) {
 #if defined(_WIN32)
   r = _aligned_malloc(size, align);
   assert(r && "_aligned_malloc failed");
+#elif defined(__SWITCH__)
+  size = (size + align - 1) &~ (align - 1);
+  return aligned_alloc(align, size);
 #else
   int res = posix_memalign(&r, align, size);
   assert(res == 0 && "posix_memalign failed");

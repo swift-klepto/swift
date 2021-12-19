@@ -222,6 +222,8 @@ class HostSpecificConfiguration(object):
             platforms_to_skip_test.add(StdlibDeploymentTarget.FreeBSD)
         if not args.test_cygwin:
             platforms_to_skip_test.add(StdlibDeploymentTarget.Cygwin)
+        if not args.test_libnx:
+            platforms_to_skip_test.add(StdlibDeploymentTarget.libnx)
         if not args.test_osx:
             platforms_to_skip_test.add(StdlibDeploymentTarget.OSX)
         if not args.test_ios_host and not args.only_non_executable_test:

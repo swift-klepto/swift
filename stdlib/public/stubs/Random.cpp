@@ -46,7 +46,18 @@
 
 using namespace swift;
 
-#if defined(__APPLE__)
+#if defined(__SWITCH__)
+
+extern "C" {
+  #include <switch/kernel/random.h>
+}
+
+SWIFT_RUNTIME_STDLIB_API
+void swift_stdlib_random(void *buf, __swift_size_t nbytes) {
+  randomGet(&buf, sizeof(buf));
+}
+
+#elif defined(__APPLE__)
 
 SWIFT_RUNTIME_STDLIB_API
 void swift_stdlib_random(void *buf, __swift_size_t nbytes) {

@@ -1763,6 +1763,7 @@ public enum OSVersion : CustomStringConvertible {
   case windows
   case haiku
   case wasi
+  case libnx
 
   public var description: String {
     switch self {
@@ -1798,6 +1799,8 @@ public enum OSVersion : CustomStringConvertible {
       return "Haiku"
     case .wasi:
       return "WASI"
+    case .libnx:
+      return "LIBNX"
     }
   }
 }
@@ -1828,6 +1831,8 @@ func _getOSVersion() -> OSVersion {
   return .tvOSSimulator
 #elseif os(watchOS) && targetEnvironment(simulator)
   return .watchOSSimulator
+#elseif os(libnx)
+  return .libnx
 #elseif os(Linux)
   return .linux
 #elseif os(FreeBSD)

@@ -22,11 +22,17 @@
 
 #include "../SwiftShims/MetadataSections.h"
 #include "ImageInspection.h"
+
+#ifndef __SWITCH__
 #include <dlfcn.h>
+#endif
 
 using namespace swift;
 
 int swift::lookupSymbol(const void *address, SymbolInfo *info) {
+#ifdef __SWITCH__
+  return 0;
+#else
   Dl_info dlinfo;
   if (dladdr(address, &dlinfo) == 0) {
     return 0;
@@ -37,6 +43,7 @@ int swift::lookupSymbol(const void *address, SymbolInfo *info) {
   info->symbolName.reset(dlinfo.dli_sname);
   info->symbolAddress = dlinfo.dli_saddr;
   return 1;
+#endif
 }
 
 #endif // defined(__ELF__)

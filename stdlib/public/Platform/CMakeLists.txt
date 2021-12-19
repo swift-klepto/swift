@@ -44,7 +44,7 @@ add_swift_target_library(swiftGlibc ${SWIFT_STDLIB_LIBRARY_BUILD_TYPES} IS_SDK_O
       ${SWIFT_RUNTIME_SWIFT_COMPILE_FLAGS}
       ${SWIFT_STANDARD_LIBRARY_SWIFT_FLAGS}
     LINK_FLAGS "${SWIFT_RUNTIME_SWIFT_LINK_FLAGS}"
-    TARGET_SDKS ANDROID CYGWIN FREEBSD OPENBSD LINUX HAIKU
+    TARGET_SDKS ANDROID CYGWIN FREEBSD OPENBSD LINUX HAIKU LIBNX
     INSTALL_IN_COMPONENT sdk-overlay
     DEPENDS glibc_modulemap)
 
@@ -67,6 +67,7 @@ add_swift_target_library(swiftCRT ${SWIFT_STDLIB_LIBRARY_BUILD_TYPES} IS_SDK_OVE
 set(glibc_modulemap_target_list)
 foreach(sdk ${SWIFT_SDKS})
   if(NOT "${sdk}" STREQUAL "LINUX" AND
+     NOT "${sdk}" STREQUAL "LIBNX" AND
      NOT "${sdk}" STREQUAL "FREEBSD" AND
      NOT "${sdk}" STREQUAL "OPENBSD" AND
      NOT "${sdk}" STREQUAL "ANDROID" AND
@@ -84,6 +85,8 @@ foreach(sdk ${SWIFT_SDKS})
       set(glibc_modulemap_source "bionic.modulemap.gyb")
     elseif(${sdk} STREQUAL OPENBSD)
       set(glibc_modulemap_source "libc-openbsd.modulemap.gyb")
+    elseif(${sdk} STREQUAL LIBNX)
+      set(glibc_modulemap_source "glibc-libnx.modulemap.gyb")
     else()
       set(glibc_modulemap_source "glibc.modulemap.gyb")
     endif()
@@ -100,7 +103,8 @@ foreach(sdk ${SWIFT_SDKS})
         FLAGS
             "-DCMAKE_SDK=${sdk}"
             "-DGLIBC_INCLUDE_PATH=${SWIFT_SDK_${sdk}_ARCH_${arch}_LIBC_INCLUDE_DIRECTORY}"
-            "-DGLIBC_ARCH_INCLUDE_PATH=${SWIFT_SDK_${sdk}_ARCH_${arch}_LIBC_ARCHITECTURE_INCLUDE_DIRECTORY}")
+            "-DGLIBC_ARCH_INCLUDE_PATH=${SWIFT_SDK_${sdk}_ARCH_${arch}_LIBC_ARCHITECTURE_INCLUDE_DIRECTORY}"
+            "-DLIBNX_INCLUDE_PATH=${SWIFT_LIBNX_DEVKITPRO_PATH}/libnx/include")
 
     list(APPEND glibc_modulemap_target_list ${glibc_modulemap_target})
 
@@ -122,7 +126,7 @@ foreach(sdk ${SWIFT_SDKS})
     # If this SDK is a target for a non-native host, except if it's for Android
     # with its own native sysroot, create a native modulemap without a sysroot
     # prefix. This is the one we'll install instead.
-    if(NOT "${SWIFT_SDK_${SWIFT_HOST_VARIANT_SDK}_ARCH_${arch}_PATH}" STREQUAL "/" AND
+    if(NOT "${SWIFT_SDK_${SWIFT_HOST_VARIANT_SDK}_ARCH_${arch}_PATH}" STREQUAL "/" AND NOT ${sdk} STREQUAL LIBNX AND
        NOT (${sdk} STREQUAL ANDROID AND NOT "${SWIFT_ANDROID_NATIVE_SYSROOT}" STREQUAL ""))
       set(glibc_sysroot_relative_modulemap_out "${module_dir}/sysroot-relative-modulemaps/glibc.modulemap")
 
@@ -145,7 +149,7 @@ foreach(sdk ${SWIFT_SDKS})
     # FIXME: When SDK is a cross-compile target (SDK != Host), the generated
     #        modulemap will be relative to the Host, with hardcoded paths.
     #        It is not relocatable to the target platform itself.
-    #        This affects any cross-comipled targets that use glibc.modulemap.
+    #        This affects any cross-compiled targets that use glibc.modulemap.
 
     swift_install_in_component(FILES "${glibc_modulemap_out}"
                                DESTINATION "lib/swift/${arch_subdir}"

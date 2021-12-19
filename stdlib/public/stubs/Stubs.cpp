@@ -290,7 +290,9 @@ uint64_t swift_float80ToString(char *Buffer, size_t BufferLength,
 /// if an error occurred, or EOF was reached.
 __swift_ssize_t
 swift_stdlib_readLine_stdin(unsigned char **LinePtr) {
-#if defined(_WIN32)
+#if defined(__SWITCH__)
+  return -1; // no stdin on switch
+#elif defined(_WIN32)
   if (LinePtr == nullptr)
     return -1;
 
@@ -500,7 +502,7 @@ const char *_swift_stdlib_strtof16_clocale(
 void _swift_stdlib_flockfile_stdout() {
 #if defined(_WIN32)
   _lock_file(stdout);
-#elif defined(__wasi__)
+#elif defined(__wasi__) || defined(__SWITCH__)
   // WebAssembly/WASI doesn't support file locking yet https://bugs.swift.org/browse/SR-12097
 #else
   flockfile(stdout);
@@ -510,7 +512,7 @@ void _swift_stdlib_flockfile_stdout() {
 void _swift_stdlib_funlockfile_stdout() {
 #if defined(_WIN32)
   _unlock_file(stdout);
-#elif defined(__wasi__)
+#elif defined(__wasi__) || defined(__SWITCH__)
   // WebAssembly/WASI doesn't support file locking yet https://bugs.swift.org/browse/SR-12097
 #else
   funlockfile(stdout);

@@ -151,6 +151,44 @@ public:
                                       bool shared = true) const override;
 };
 
+class LLVM_LIBRARY_VISIBILITY Libnx : public ToolChain {
+protected:
+  InvocationInfo constructInvocation(const InterpretJobAction &job,
+                                     const JobContext &context) const override;
+  InvocationInfo constructInvocation(const AutolinkExtractJobAction &job,
+                                     const JobContext &context) const override;
+
+  /// If provided, and if the user has not already explicitly specified a
+  /// linker to use via the "-fuse-ld=" option, this linker will be passed to
+  /// the compiler invocation via "-fuse-ld=". Return an empty string to not
+  /// specify any specific linker (the "-fuse-ld=" option will not be
+  /// specified).
+  ///
+  /// The default behavior is to use the gold linker on ARM architectures,
+  /// and to not provide a specific linker otherwise.
+  virtual std::string getDefaultLinker() const;
+
+  /// The target to be passed to the compiler invocation. By default, this
+  /// is the target triple, but this may be overridden to accommodate some
+  /// platforms.
+  virtual std::string getTargetForLinker() const;
+
+  bool addRuntimeRPath(const llvm::Triple &T,
+                       const llvm::opt::ArgList &Args) const;
+
+  InvocationInfo constructInvocation(const DynamicLinkJobAction &job,
+                                     const JobContext &context) const override;
+  InvocationInfo constructInvocation(const StaticLinkJobAction &job,
+                                     const JobContext &context) const override;
+
+public:
+  Libnx(const Driver &D, const llvm::Triple &Triple)
+      : ToolChain(D, Triple) {}
+  ~Libnx() = default;
+  std::string sanitizerRuntimeLibName(StringRef Sanitizer,
+                                      bool shared = true) const override;
+};
+
 class LLVM_LIBRARY_VISIBILITY Android : public GenericUnix {
 protected:
   std::string getTargetForLinker() const override;

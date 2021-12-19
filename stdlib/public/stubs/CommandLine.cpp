@@ -63,6 +63,35 @@ char **_swift_stdlib_getUnsafeArgvArgc(int *outArgLen) {
   *outArgLen = *_NSGetArgc();
   return *_NSGetArgv();
 }
+#elif defined(__SWITCH__)
+extern "C" {
+  // provided by libnx env.h
+  // which cannot be included since it uses disallowed casts in constexprs
+  bool envHasArgv(void);
+
+  // provided by libnx argv.c, populated in argvSetup()
+  extern int __system_argc;
+  extern char** __system_argv;
+}
+
+SWIFT_RUNTIME_STDLIB_API
+char **_swift_stdlib_getUnsafeArgvArgc(int *outArgLen) {
+  assert(outArgLen != nullptr);
+
+  if (_swift_stdlib_ProcessOverrideUnsafeArgv) {
+    *outArgLen = _swift_stdlib_ProcessOverrideUnsafeArgc;
+    return _swift_stdlib_ProcessOverrideUnsafeArgv;
+  }
+
+  if (!envHasArgv()) {
+    *outArgLen = 0;
+    return nullptr;
+  }
+  else {
+    *outArgLen = __system_argc;
+    return __system_argv;
+  }
+}
 #elif defined(__linux__) || defined(__CYGWIN__)
 SWIFT_RUNTIME_STDLIB_API
 char **_swift_stdlib_getUnsafeArgvArgc(int *outArgLen) {

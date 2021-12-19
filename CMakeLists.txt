@@ -149,6 +149,8 @@ set(SWIFT_ANALYZE_CODE_COVERAGE FALSE CACHE STRING
 # manually set it as part of their own CMake configuration).
 set(SWIFT_VERSION "5.4.2")
 
+set(KLEPTO_VERSION "0.1.0")
+
 set(SWIFT_VENDOR "" CACHE STRING
     "The vendor name of the Swift compiler")
 set(SWIFT_COMPILER_VERSION "" CACHE STRING
@@ -797,6 +799,16 @@ if(swift_build_android AND NOT "${SWIFT_HOST_VARIANT_SDK}" STREQUAL "ANDROID")
     set(SWIFT_SDK_ANDROID_ARCHITECTURES armv7;aarch64)
   endif()
   configure_sdk_unix("Android" "${SWIFT_SDK_ANDROID_ARCHITECTURES}")
+endif()
+
+# Should we cross-compile the standard library for libnx?
+is_sdk_requested(LIBNX swift_build_libnx)
+if(swift_build_libnx AND NOT "${SWIFT_HOST_VARIANT_SDK}" STREQUAL "LIBNX")
+  if ("${SWIFT_LIBNX_DEVKITPRO_PATH}" STREQUAL "")
+    message(FATAL_ERROR "You must set SWIFT_LIBNX_DEVKITPRO_PATH to cross-compile the Swift runtime for libnx")
+  endif()
+
+  configure_sdk_libnx()
 endif()
 
 # Should we cross-compile the standard library for Windows?

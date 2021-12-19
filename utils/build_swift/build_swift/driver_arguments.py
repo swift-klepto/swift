@@ -147,6 +147,9 @@ def _apply_default_arguments(args):
     if not args.android or not args.build_android:
         args.build_android = False
 
+    if not args.libnx or not args.build_libnx:
+        args.build_libnx = False
+
     # --test-paths implies --test and/or --validation-test
     # depending on what directories/files have been specified.
     if args.test_paths:
@@ -192,6 +195,7 @@ def _apply_default_arguments(args):
         args.test_swiftformat = False
         args.test_swiftevolve = False
         args.test_toolchainbenchmarks = False
+        args.test_libnx = False
 
     # --skip-test-ios is merely a shorthand for host and simulator tests.
     if not args.test_ios:
@@ -327,6 +331,9 @@ def create_argument_parser():
 
     option('--android', toggle_true,
            help='also build for Android')
+
+    option('--libnx', toggle_true,
+           help='also build for libnx')
 
     option('--swift-analyze-code-coverage', store,
            choices=['false', 'not-merged', 'merged'],
@@ -904,6 +911,8 @@ def create_argument_parser():
            help='skip testing Swift stdlibs for FreeBSD')
     option('--skip-test-cygwin', toggle_false('test_cygwin'),
            help='skip testing Swift stdlibs for Cygwin')
+    option('--skip-test-libnx', toggle_false('test_libnx'),
+           help='skip testing Swift stdlibs for libnx')
 
     # -------------------------------------------------------------------------
     in_group('Run build')
@@ -967,6 +976,9 @@ def create_argument_parser():
 
     option('--skip-build-android', toggle_false('build_android'),
            help='skip building Swift stdlibs for Android')
+
+    option('--skip-build-libnx', toggle_false('build_libnx'),
+           help='skip building Swift stdlibs for libnx')
 
     option('--skip-build-benchmarks', toggle_false('build_benchmarks'),
            help='skip building Swift Benchmark Suite')
@@ -1110,6 +1122,22 @@ def create_argument_parser():
            help='The target architecture when building for Android. '
                 'Currently, only armv7, aarch64, and x86_64 are supported. '
                 '%(default)s is the default.')
+
+    # -------------------------------------------------------------------------
+    in_group('Build settings for libnx')
+
+    option('--devkitpro-path', store_path,
+           help='Full path to the DKP installation.')
+    option('--libnx-icu-uc', store_path,
+           help='Path to libicuuc.so')
+    option('--libnx-icu-uc-include', store_path,
+           help='Path to a directory containing headers for libicuuc')
+    option('--libnx-icu-i18n', store_path,
+           help='Path to libicui18n.so')
+    option('--libnx-icu-i18n-include', store_path,
+           help='Path to a directory containing headers libicui18n')
+    option('--libnx-icu-data', store_path,
+           help='Path to libicudata.so')
 
     # -------------------------------------------------------------------------
     in_group('Experimental language features')

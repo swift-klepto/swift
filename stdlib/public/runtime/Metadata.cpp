@@ -42,11 +42,15 @@
 #define NOMINMAX
 #include <windows.h>
 #else
+#ifndef __SWITCH__
 #include <sys/mman.h>
+#endif
 #include <unistd.h>
 // WASI doesn't support dynamic linking yet.
 #if !defined(__wasi__)
+#ifndef __SWITCH__
 #include <dlfcn.h>
+#endif
 #endif // !defined(__wasi__)
 #endif
 #if SWIFT_PTRAUTH

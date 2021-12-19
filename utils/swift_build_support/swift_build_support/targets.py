@@ -194,7 +194,9 @@ class StdlibDeploymentTarget(object):
         "aarch64",
         "powerpc64",
         "powerpc64le",
-        "s390x"])
+        "s390x"], sdk_name="LINUX")
+
+    libnx = Platform("libnx", archs=["aarch64"], sdk_name="LIBNX")
 
     FreeBSD = Platform("freebsd", archs=["x86_64"])
 
@@ -221,7 +223,8 @@ class StdlibDeploymentTarget(object):
         Cygwin,
         Android,
         Windows,
-        Haiku]
+        Haiku,
+        libnx,]
 
     # Cache of targets by name.
     _targets_by_name = dict((target.name, target)
@@ -236,6 +239,8 @@ class StdlibDeploymentTarget(object):
         'TVOS_SIMULATOR': AppleTVSimulator.targets,
         'WATCHOS': AppleWatch.targets,
         'WATCHOS_SIMULATOR': AppleWatchSimulator.targets,
+        'LIBNX': libnx.targets,
+        'LINUX': [target for target in Linux.targets if target.arch == "x86_64"],  # TODO: find a better way to avoid cross-compiling stdlib for all archs
     }
 
     @staticmethod

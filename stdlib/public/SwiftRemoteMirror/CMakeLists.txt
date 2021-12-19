@@ -1,6 +1,6 @@
 # libswiftRemoteMirror.dylib should not have runtime dependencies; it's
 # always built as a shared library.
-if(SWIFT_BUILD_DYNAMIC_STDLIB)
+if(SWIFT_BUILD_DYNAMIC_STDLIB AND FALSE)  # TODO:  only disable this for libnx
   add_swift_target_library(swiftRemoteMirror
                            SHARED DONT_EMBED_BITCODE NOSWIFTRT
                            SwiftRemoteMirror.cpp

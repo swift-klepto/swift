@@ -23,6 +23,8 @@
 
 #if canImport(Darwin) || os(OpenBSD)
   let RTLD_DEFAULT = UnsafeMutableRawPointer(bitPattern: -2)
+#elseif os(libnx)
+// libnx doesn't support dynamic linking.
 #elseif os(Linux)
   let RTLD_DEFAULT = UnsafeMutableRawPointer(bitPattern: 0)
 #elseif os(Android)
@@ -47,6 +49,8 @@ public func pointerToSwiftCoreSymbol(name: String) -> UnsafeMutableRawPointer? {
                        to: UnsafeMutableRawPointer?.self)
 #elseif os(WASI)
   fatalError("\(#function) is not supported on WebAssembly/WASI")
+#elseif os(libnx)
+  fatalError("\(#function) is not supported on libnx")
 #else
   return dlsym(RTLD_DEFAULT, name)
 #endif

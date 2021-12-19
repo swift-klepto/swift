@@ -1,0 +1,690 @@
+//===----------------------------------------------------------------------===//
+//
+// This source file is part of the Swift.org open source project
+//
+// Copyright (c) 2014 - 2017 Apple Inc. and the Swift project authors
+// Licensed under Apache License v2.0 with Runtime Library Exception
+//
+// See https://swift.org/LICENSE.txt for license information
+// See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors
+//
+//===----------------------------------------------------------------------===//
+
+module SwiftSwitch [system] {
+    module types {
+        header "${LIBNX_INCLUDE_PATH}/switch/types.h"
+        export *
+    }
+    module result {
+        header "${LIBNX_INCLUDE_PATH}/switch/result.h"
+        export *
+    }
+    module nro {
+        header "${LIBNX_INCLUDE_PATH}/switch/nro.h"
+        export *
+    }
+    module nacp {
+        header "${LIBNX_INCLUDE_PATH}/switch/nacp.h"
+        export *
+    }
+
+    module arm {
+        module tls {
+            header "${LIBNX_INCLUDE_PATH}/switch/arm/tls.h"
+            export *
+        }
+        module cache {
+            header "${LIBNX_INCLUDE_PATH}/switch/arm/cache.h"
+            export *
+        }
+        module counter {
+            header "${LIBNX_INCLUDE_PATH}/switch/arm/counter.h"
+            export *
+        }
+    }
+
+    module kernel {
+        module svc {
+            header "${LIBNX_INCLUDE_PATH}/switch/kernel/svc.h"
+            export *
+        }
+        module wait {
+            header "${LIBNX_INCLUDE_PATH}/switch/kernel/wait.h"
+            export *
+        }
+        module tmem {
+            header "${LIBNX_INCLUDE_PATH}/switch/kernel/tmem.h"
+            export *
+        }
+        module shmem {
+            header "${LIBNX_INCLUDE_PATH}/switch/kernel/shmem.h"
+            export *
+        }
+        module mutex {
+            header "${LIBNX_INCLUDE_PATH}/switch/kernel/mutex.h"
+            export *
+        }
+        module event {
+            header "${LIBNX_INCLUDE_PATH}/switch/kernel/event.h"
+            export *
+        }
+        module levent {
+            header "${LIBNX_INCLUDE_PATH}/switch/kernel/levent.h"
+            export *
+        }
+        module uevent {
+            header "${LIBNX_INCLUDE_PATH}/switch/kernel/uevent.h"
+            export *
+        }
+        module utimer {
+            header "${LIBNX_INCLUDE_PATH}/switch/kernel/utimer.h"
+            export *
+        }
+        module rwlock {
+            header "${LIBNX_INCLUDE_PATH}/switch/kernel/rwlock.h"
+            export *
+        }
+        module condvar {
+            header "${LIBNX_INCLUDE_PATH}/switch/kernel/condvar.h"
+            export *
+        }
+        module thread {
+            header "${LIBNX_INCLUDE_PATH}/switch/kernel/thread.h"
+            export *
+        }
+        module semaphore {
+            header "${LIBNX_INCLUDE_PATH}/switch/kernel/semaphore.h"
+            export *
+        }
+        module virtmem {
+            header "${LIBNX_INCLUDE_PATH}/switch/kernel/virtmem.h"
+            export *
+        }
+        module detect {
+            header "${LIBNX_INCLUDE_PATH}/switch/kernel/detect.h"
+            export *
+        }
+        module random {
+            header "${LIBNX_INCLUDE_PATH}/switch/kernel/random.h"
+            export *
+        }
+        module jit {
+            header "${LIBNX_INCLUDE_PATH}/switch/kernel/jit.h"
+            export *
+        }
+        module barrier {
+            header "${LIBNX_INCLUDE_PATH}/switch/kernel/barrier.h"
+            export *
+        }
+    }
+
+    module sf {
+        module hipc {
+            header "${LIBNX_INCLUDE_PATH}/switch/sf/hipc.h"
+            export *
+        }
+        module cmif {
+            header "${LIBNX_INCLUDE_PATH}/switch/sf/cmif.h"
+            export *
+        }
+        module service {
+            header "${LIBNX_INCLUDE_PATH}/switch/sf/service.h"
+            export *
+        }
+        module sessionmgr {
+            header "${LIBNX_INCLUDE_PATH}/switch/sf/sessionmgr.h"
+            export *
+        }
+    }
+
+    module services {
+        module sm {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/sm.h"
+            export *
+        }
+        module smm {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/smm.h"
+            export *
+        }
+        module fs {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/fs.h"
+            export *
+        }
+        module fsldr {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/fsldr.h"
+            export *
+        }
+        module fspr {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/fspr.h"
+            export *
+        }
+        module acc {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/acc.h"
+            export *
+        }
+        module apm {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/apm.h"
+            export *
+        }
+        module applet {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/applet.h"
+            export *
+        }
+        module async {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/async.h"
+            export *
+        }
+        module audin {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/audin.h"
+            export *
+        }
+        module audout {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/audout.h"
+            export *
+        }
+        module audren {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/audren.h"
+            export *
+        }
+        module auddev {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/auddev.h"
+            export *
+        }
+        module hwopus {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/hwopus.h"
+            export *
+        }
+        module csrng {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/csrng.h"
+            export *
+        }
+        module lbl {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/lbl.h"
+            export *
+        }
+        module i2c {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/i2c.h"
+            export *
+        }
+        module gpio {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/gpio.h"
+            export *
+        }
+        module uart {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/uart.h"
+            export *
+        }
+        module bpc {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/bpc.h"
+            export *
+        }
+        module pcv {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/pcv.h"
+            export *
+        }
+        module clkrst {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/clkrst.h"
+            export *
+        }
+        module fan {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/fan.h"
+            export *
+        }
+        module pgl {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/pgl.h"
+            export *
+        }
+        module psm {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/psm.h"
+            export *
+        }
+        module spsm {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/spsm.h"
+            export *
+        }
+        module fatal {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/fatal.h"
+            export *
+        }
+        module time {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/time.h"
+            export *
+        }
+        module usb {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/usb.h"
+            export *
+        }
+        module usbds {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/usbds.h"
+            export *
+        }
+        module usbhs {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/usbhs.h"
+            export *
+        }
+        module hid {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/hid.h"
+            export *
+        }
+        module hidbus {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/hidbus.h"
+            export *
+        }
+        module hiddbg {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/hiddbg.h"
+            export *
+        }
+        module hidsys {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/hidsys.h"
+            export *
+        }
+        module irs {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/irs.h"
+            export *
+        }
+        module pl {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/pl.h"
+            export *
+        }
+        module vi {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/vi.h"
+            export *
+        }
+        module nv {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/nv.h"
+            export *
+        }
+        module nifm {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/nifm.h"
+            export *
+        }
+        module nim {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/nim.h"
+            export *
+        }
+        module ns {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/ns.h"
+            export *
+        }
+        module ldr {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/ldr.h"
+            export *
+        }
+        module ro {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/ro.h"
+            export *
+        }
+        module tc {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/tc.h"
+            export *
+        }
+        module ts {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/ts.h"
+            export *
+        }
+        module pm {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/pm.h"
+            export *
+        }
+        module set {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/set.h"
+            export *
+        }
+        module ssl {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/ssl.h"
+            export *
+        }
+        module lr {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/lr.h"
+            export *
+        }
+        module bt {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/bt.h"
+            export *
+        }
+        module btdrv {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/btdrv.h"
+            export *
+        }
+        module btm {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/btm.h"
+            export *
+        }
+        module btmu {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/btmu.h"
+            export *
+        }
+        module btmsys {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/btmsys.h"
+            export *
+        }
+        module spl {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/spl.h"
+            export *
+        }
+        module ncm {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/ncm.h"
+            export *
+        }
+        module psc {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/psc.h"
+            export *
+        }
+        module caps {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/caps.h"
+            export *
+        }
+        module capsa {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/capsa.h"
+            export *
+        }
+        module capsc {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/capsc.h"
+            export *
+        }
+        module capsdc {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/capsdc.h"
+            export *
+        }
+        module capsu {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/capsu.h"
+            export *
+        }
+        module capssc {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/capssc.h"
+            export *
+        }
+        module capssu {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/capssu.h"
+            export *
+        }
+        module capmtp {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/capmtp.h"
+            export *
+        }
+        module nfc {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/nfc.h"
+            export *
+        }
+        module wlaninf {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/wlaninf.h"
+            export *
+        }
+        module pctl {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/pctl.h"
+            export *
+        }
+        module pdm {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/pdm.h"
+            export *
+        }
+        module grc {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/grc.h"
+            export *
+        }
+        module friends {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/friends.h"
+            export *
+        }
+        module notif {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/notif.h"
+            export *
+        }
+        module mii {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/mii.h"
+            export *
+        }
+        module miiimg {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/miiimg.h"
+            export *
+        }
+        module ldn {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/ldn.h"
+            export *
+        }
+        module lp2p {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/lp2p.h"
+            export *
+        }
+        module news {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/news.h"
+            export *
+        }
+        module ins {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/ins.h"
+            export *
+        }
+        module ectx {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/ectx.h"
+            export *
+        }
+        module avm {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/avm.h"
+            export *
+        }
+        module mm {
+            header "${LIBNX_INCLUDE_PATH}/switch/services/mm.h"
+            export *
+        }
+    }
+
+    module display {
+        module binder {
+            header "${LIBNX_INCLUDE_PATH}/switch/display/binder.h"
+            export *
+        }
+        module parcel {
+            header "${LIBNX_INCLUDE_PATH}/switch/display/parcel.h"
+            export *
+        }
+        module buffer_producer {
+            header "${LIBNX_INCLUDE_PATH}/switch/display/buffer_producer.h"
+            export *
+        }
+        module native_window {
+            header "${LIBNX_INCLUDE_PATH}/switch/display/native_window.h"
+            export *
+        }
+        module framebuffer {
+            header "${LIBNX_INCLUDE_PATH}/switch/display/framebuffer.h"
+            export *
+        }
+    }
+
+    module nvidia {
+        module ioctl {
+            header "${LIBNX_INCLUDE_PATH}/switch/nvidia/ioctl.h"
+            export *
+        }
+        module graphic_buffer {
+            header "${LIBNX_INCLUDE_PATH}/switch/nvidia/graphic_buffer.h"
+            export *
+        }
+        module fence {
+            header "${LIBNX_INCLUDE_PATH}/switch/nvidia/fence.h"
+            export *
+        }
+        module map {
+            header "${LIBNX_INCLUDE_PATH}/switch/nvidia/map.h"
+            export *
+        }
+        module address_space {
+            header "${LIBNX_INCLUDE_PATH}/switch/nvidia/address_space.h"
+            export *
+        }
+        module channel {
+            header "${LIBNX_INCLUDE_PATH}/switch/nvidia/channel.h"
+            export *
+        }
+        module gpu {
+            header "${LIBNX_INCLUDE_PATH}/switch/nvidia/gpu.h"
+            export *
+        }
+        module gpu_channel {
+            header "${LIBNX_INCLUDE_PATH}/switch/nvidia/gpu_channel.h"
+            export *
+        }
+    }
+
+    module audio {
+        module driver {
+            header "${LIBNX_INCLUDE_PATH}/switch/audio/driver.h"
+            export *
+        }
+    }
+
+    module applets {
+        module libapplet {
+            header "${LIBNX_INCLUDE_PATH}/switch/applets/libapplet.h"
+            export *
+        }
+        module album_la {
+            header "${LIBNX_INCLUDE_PATH}/switch/applets/album_la.h"
+            export *
+        }
+        module friends_la {
+            header "${LIBNX_INCLUDE_PATH}/switch/applets/friends_la.h"
+            export *
+        }
+        module hid_la {
+            header "${LIBNX_INCLUDE_PATH}/switch/applets/hid_la.h"
+            export *
+        }
+        module mii_la {
+            header "${LIBNX_INCLUDE_PATH}/switch/applets/mii_la.h"
+            export *
+        }
+        module nfp_la {
+            header "${LIBNX_INCLUDE_PATH}/switch/applets/nfp_la.h"
+            export *
+        }
+        module nifm_la {
+            header "${LIBNX_INCLUDE_PATH}/switch/applets/nifm_la.h"
+            export *
+        }
+        module pctlauth {
+            header "${LIBNX_INCLUDE_PATH}/switch/applets/pctlauth.h"
+            export *
+        }
+        module psel {
+            header "${LIBNX_INCLUDE_PATH}/switch/applets/psel.h"
+            export *
+        }
+        module error {
+            header "${LIBNX_INCLUDE_PATH}/switch/applets/error.h"
+            export *
+        }
+        module swkbd {
+            header "${LIBNX_INCLUDE_PATH}/switch/applets/swkbd.h"
+            export *
+        }
+        module web {
+            header "${LIBNX_INCLUDE_PATH}/switch/applets/web.h"
+            export *
+        }
+    }
+
+    module runtime {
+        module env {
+            header "${LIBNX_INCLUDE_PATH}/switch/runtime/env.h"
+            export *
+        }
+        module hosversion {
+            header "${LIBNX_INCLUDE_PATH}/switch/runtime/hosversion.h"
+            export *
+        }
+        module diag {
+            header "${LIBNX_INCLUDE_PATH}/switch/runtime/diag.h"
+            export *
+        }
+        module nxlink {
+            header "${LIBNX_INCLUDE_PATH}/switch/runtime/nxlink.h"
+            export *
+        }
+        module resolver {
+            header "${LIBNX_INCLUDE_PATH}/switch/runtime/resolver.h"
+            export *
+        }
+        module pad {
+            header "${LIBNX_INCLUDE_PATH}/switch/runtime/pad.h"
+            export *
+        }
+        module ringcon {
+            header "${LIBNX_INCLUDE_PATH}/switch/runtime/ringcon.h"
+            export *
+        }
+        module btdev {
+            header "${LIBNX_INCLUDE_PATH}/switch/runtime/btdev.h"
+            export *
+        }
+
+        module util {
+            module utf {
+                header "${LIBNX_INCLUDE_PATH}/switch/runtime/util/utf.h"
+                export *
+            }
+        }
+
+        module devices {
+            module console {
+                header "${LIBNX_INCLUDE_PATH}/switch/runtime/devices/console.h"
+                export *
+            }
+            module usb_comms {
+                header "${LIBNX_INCLUDE_PATH}/switch/runtime/devices/usb_comms.h"
+                export *
+            }
+            module fs_dev {
+                header "${LIBNX_INCLUDE_PATH}/switch/runtime/devices/fs_dev.h"
+                export *
+            }
+            module romfs_dev {
+                header "${LIBNX_INCLUDE_PATH}/switch/runtime/devices/romfs_dev.h"
+                export *
+            }
+            module socket {
+                header "${LIBNX_INCLUDE_PATH}/switch/runtime/devices/socket.h"
+                export *
+            }
+        }
+    }
+
+    module crypto {
+        module aes {
+            header "${LIBNX_INCLUDE_PATH}/switch/crypto/aes.h"
+            export *
+        }
+        module aes_cbc {
+            header "${LIBNX_INCLUDE_PATH}/switch/crypto/aes_cbc.h"
+            export *
+        }
+        module aes_ctr {
+            header "${LIBNX_INCLUDE_PATH}/switch/crypto/aes_ctr.h"
+            export *
+        }
+        module aes_xts {
+            header "${LIBNX_INCLUDE_PATH}/switch/crypto/aes_xts.h"
+            export *
+        }
+        module cmac {
+            header "${LIBNX_INCLUDE_PATH}/switch/crypto/cmac.h"
+            export *
+        }
+        module sha256 {
+            header "${LIBNX_INCLUDE_PATH}/switch/crypto/sha256.h"
+            export *
+        }
+        module sha1 {
+            header "${LIBNX_INCLUDE_PATH}/switch/crypto/sha1.h"
+            export *
+        }
+        module hmac {
+            header "${LIBNX_INCLUDE_PATH}/switch/crypto/hmac.h"
+            export *
+        }
+        module crc {
+            header "${LIBNX_INCLUDE_PATH}/switch/crypto/crc.h"
+            export *
+        }
+    }
+}

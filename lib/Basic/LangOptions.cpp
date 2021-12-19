@@ -52,6 +52,7 @@ static const SupportedConditionalValue SupportedConditionalCompilationOSs[] = {
   "Cygwin",
   "Haiku",
   "WASI",
+  "libnx",
 };
 
 static const SupportedConditionalValue SupportedConditionalCompilationArches[] = {
@@ -287,6 +288,12 @@ std::pair<bool, bool> LangOptions::setTarget(llvm::Triple triple) {
     break;
   case llvm::Triple::WASI:
     addPlatformConditionValue(PlatformConditionKind::OS, "WASI");
+    break;
+  case llvm::Triple::UnknownOS:
+    // libnx is both Linux and libnx - be careful to always check
+    // os(libnx) before os(Linux)
+    addPlatformConditionValue(PlatformConditionKind::OS, "Linux");
+    addPlatformConditionValue(PlatformConditionKind::OS, "libnx");
     break;
   default:
     UnsupportedOS = true;

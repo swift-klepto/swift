@@ -102,6 +102,11 @@ function(_add_target_variant_c_compile_link_flags)
     endif()
   endif()
 
+  if("${CFLAGS_SDK}" STREQUAL "LIBNX")
+    swift_libnx_tools_path(tools_path)
+    list(APPEND result "-B" "${tools_path}")
+  endif()
+
   if("${CFLAGS_SDK}" IN_LIST SWIFT_APPLE_PLATFORMS)
     # We collate -F with the framework path to avoid unwanted deduplication
     # of options by target_compile_options -- this way no undesired
@@ -304,6 +309,43 @@ function(_add_target_variant_c_compile_flags)
     endif()
   endif()
 
+  if("${CFLAGS_SDK}" STREQUAL "LIBNX")
+    # warnings and errors
+    list(APPEND result "-Wno-gnu-include-next")  # for stdint.h
+
+    # setup tls
+    list(APPEND result "-ftls-model=local-exec")
+    list(APPEND result "-mno-tls-direct-seg-refs")
+    list(APPEND result "-Qunused-arguments")
+    list(APPEND result "SHELL:-Xclang -target-feature")
+    list(APPEND result "SHELL:-Xclang +read-tp-soft")
+
+    # platform defines
+    list(APPEND result "-D__SWITCH__") # normally in the Makefile
+    list(APPEND result "-D__DEVKITA64__") # normally baked in the toolchain
+
+    # enable regular unix / linux features
+    list(APPEND result "-D__unix__")
+    list(APPEND result "-D__linux__")
+
+    # remove host stdlibs
+    list(APPEND result "-nostdinc")
+    list(APPEND result "-nostdinc++")
+
+    # add dkp stdlib
+    # I don't know where those comes from but they are necessary to enable some stdlib features
+    list(APPEND result "-D_POSIX_C_SOURCE=200809")
+    list(APPEND result "-D_GNU_SOURCE")
+
+    swift_libnx_includes("LIBNX_STDLIB_DKA64_INCLUDES")
+    foreach(path IN LISTS LIBNX_STDLIB_DKA64_INCLUDES)
+      list(APPEND result "-isystem${path}")
+    endforeach()
+
+    # add libnx
+    list(APPEND result "-I${SWIFT_LIBNX_DEVKITPRO_PATH}/libnx/include/")
+  endif()
+
   if("${CFLAGS_SDK}" STREQUAL "WASI")
     list(APPEND result "-D_WASI_EMULATED_MMAN")
   endif()
@@ -413,6 +455,30 @@ function(_add_target_variant_link_flags)
     foreach(path IN LISTS ${LFLAGS_ARCH}_LIB)
       list(APPEND library_search_directories ${path})
     endforeach()
+  elseif("${LFLAGS_SDK}" STREQUAL "LIBNX")
+    list(APPEND result "-lm")
+    list(APPEND result "-lnx")
+
+    list(APPEND result "-specs=${SWIFT_LIBNX_DEVKITPRO_PATH}/libnx/switch_clang.specs")
+    list(APPEND result "-nostdlib")
+
+    # link against the custom C++ library
+    list(APPEND link_libraries ${SWIFT_LIBNX_DEVKITPRO_PATH}/devkitA64/aarch64-none-elf/lib/libc.a)
+    list(APPEND link_libraries ${SWIFT_LIBNX_DEVKITPRO_PATH}/devkitA64/aarch64-none-elf/lib/libstdc++.a)
+
+    # link against the ICU libraries
+    list(APPEND link_libraries
+      ${SWIFT_LIBNX_aarch64_ICU_I18N}
+      ${SWIFT_LIBNX_aarch64_ICU_UC})
+
+    # add stdlib search paths
+    swift_libnx_libgcc_cross_compile(${LFLAGS_ARCH}_LIB)
+    foreach(path IN LISTS ${LFLAGS_ARCH}_LIB)
+      list(APPEND library_search_directories ${path})
+    endforeach()
+
+    # add libnx search path
+    list(APPEND library_search_directories ${SWIFT_LIBNX_DEVKITPRO_PATH}/libnx/lib)
   else()
     # If lto is enabled, we need to add the object path flag so that the LTO code
     # generator leaves the intermediate object file in a place where it will not
@@ -674,6 +740,10 @@ function(_add_swift_target_library_single target name)
   precondition(SWIFTLIB_SINGLE_SDK MESSAGE "Should specify an SDK")
   precondition(SWIFTLIB_SINGLE_ARCHITECTURE MESSAGE "Should specify an architecture")
   precondition(SWIFTLIB_SINGLE_INSTALL_IN_COMPONENT MESSAGE "INSTALL_IN_COMPONENT is required")
+
+  if(SWIFTLIB_SINGLE_SDK STREQUAL LIBNX)
+    set(SWIFTLIB_SINGLE_SHARED FALSE)
+  endif()
 
   if(NOT SWIFTLIB_SINGLE_SHARED AND
      NOT SWIFTLIB_SINGLE_STATIC AND
@@ -1733,7 +1803,7 @@ function(add_swift_target_library name)
     elseif(${sdk} STREQUAL OPENBSD)
       list(APPEND swiftlib_module_depends_flattened
            ${SWIFTLIB_SWIFT_MODULE_DEPENDS_OPENBSD})
-    elseif(${sdk} STREQUAL LINUX OR ${sdk} STREQUAL ANDROID)
+    elseif(${sdk} STREQUAL LINUX OR ${sdk} STREQUAL ANDROID OR ${sdk} STREQUAL LIBNX)
       list(APPEND swiftlib_module_depends_flattened
            ${SWIFTLIB_SWIFT_MODULE_DEPENDS_LINUX})
     elseif(${sdk} STREQUAL CYGWIN)

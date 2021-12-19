@@ -105,6 +105,30 @@ if(SWIFT_BUILD_STATIC_STDLIB AND "${sdk}" STREQUAL "LINUX")
   add_custom_target(static_binary_magic ALL DEPENDS ${static_binary_lnk_file_list})
 endif()
 
+set(sdk "LIBNX")  # TODO: de-hardcode that
+if(SWIFT_BUILD_STATIC_STDLIB)
+  set(static_binary_lnk_file_list)
+  string(TOLOWER "${sdk}" lowercase_sdk)
+
+  # Generate the static-executable-args.lnk file used for ELF systems (eg linux)
+  set(linkfile "${lowercase_sdk}/static-executable-args.lnk")
+  add_custom_command_target(swift_static_binary_${sdk}_args
+    COMMAND
+      "${CMAKE_COMMAND}" -E copy
+      "${SWIFT_SOURCE_DIR}/utils/libnx-static-executable-args.lnk"
+      "${SWIFTSTATICLIB_DIR}/${linkfile}"
+    OUTPUT
+      "${SWIFTSTATICLIB_DIR}/${linkfile}"
+    DEPENDS
+      "${SWIFT_SOURCE_DIR}/utils/libnx-static-executable-args.lnk")
+
+  list(APPEND static_binary_lnk_file_list ${swift_static_binary_${sdk}_args})
+  swift_install_in_component(FILES "${SWIFTSTATICLIB_DIR}/${linkfile}"
+                             DESTINATION "lib/swift_static/${lowercase_sdk}"
+                             COMPONENT stdlib)
+  add_custom_target(static_binary_magic_libnx ALL DEPENDS ${static_binary_lnk_file_list})
+endif()
+
 add_swift_target_library(swiftRuntime OBJECT_LIBRARY
   ${swift_runtime_sources}
   ${swift_runtime_objc_sources}

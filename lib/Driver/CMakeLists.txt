@@ -15,6 +15,7 @@ set(swiftDriver_sources
   ToolChain.cpp
   ToolChains.cpp
   UnixToolChains.cpp
+  LibnxToolchains.cpp
   WindowsToolChains.cpp
   )
 

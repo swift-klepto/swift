@@ -7,6 +7,7 @@ set(SWIFT_CONFIGURED_SDKS)
 
 include(SwiftWindowsSupport)
 include(SwiftAndroidSupport)
+include(SwiftLibnxSupport)
 
 # Report the given SDK to the user.
 function(_report_sdk prefix)
@@ -243,6 +244,32 @@ macro(configure_sdk_darwin
       set(SWIFT_SDK_MACCATALYST_LIB_SUBDIR "maccatalyst")
     endif()
   endforeach()
+
+  # Add this to the list of known SDKs.
+  list(APPEND SWIFT_CONFIGURED_SDKS "${prefix}")
+
+  _report_sdk("${prefix}")
+endmacro()
+
+macro(configure_sdk_libnx)
+  string(TOUPPER "libnx" prefix)
+  string(TOLOWER "libnx" platform)
+
+  set(SWIFT_SDK_${prefix}_NAME "${prefix}")
+  set(SWIFT_SDK_${prefix}_LIB_SUBDIR "${platform}")
+  # SWIFT_SDK_${prefix}_VERSION set by build.py
+
+  set(SWIFT_SDK_${prefix}_ARCH_aarch64_LIBC_INCLUDE_DIRECTORY "${SWIFT_LIBNX_DEVKITPRO_PATH}/devkitA64/aarch64-none-elf/include")
+  set(SWIFT_SDK_${prefix}_ARCH_aarch64_LIBC_ARCHITECTURE_INCLUDE_DIRECTORY "${SWIFT_LIBNX_DEVKITPRO_PATH}/devkitA64/aarch64-none-elf/include")
+
+  set(SWIFT_SDK_${prefix}_ARCHITECTURES "aarch64")
+
+  set(SWIFT_SDK_${prefix}_OBJECT_FORMAT "ELF")
+  set(SWIFT_SDK_${prefix}_USE_ISYSROOT FALSE)
+
+  set(SWIFT_SDK_LIBNX_ARCH_aarch64_TRIPLE "aarch64-none-unknown-elf")
+  set(SWIFT_SDK_LIBNX_ARCH_aarch64_MODULE "aarch64-none-unknown-elf")
+  set(SWIFT_SDK_LIBNX_ARCH_aarch64_ALT_SPELLING "aarch64")
 
   # Add this to the list of known SDKs.
   list(APPEND SWIFT_CONFIGURED_SDKS "${prefix}")

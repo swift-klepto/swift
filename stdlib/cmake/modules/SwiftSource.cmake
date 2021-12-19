@@ -199,9 +199,11 @@ function(_add_target_variant_swift_compile_flags
     ""                  # multi-value args
     ${ARGN})
 
-  # On Windows, we don't set SWIFT_SDK_WINDOWS_PATH_ARCH_{ARCH}_PATH, so don't include it.
+  # On Windows and libnx, we don't set SWIFT_SDK_WINDOWS_PATH_ARCH_{ARCH}_PATH, so don't include it.
   if (NOT "${sdk}" STREQUAL "WINDOWS")
-    list(APPEND result "-sdk" "${SWIFT_SDK_${sdk}_ARCH_${arch}_PATH}")
+    if (NOT "${sdk}" STREQUAL "LIBNX")
+      list(APPEND result "-sdk" "${SWIFT_SDK_${sdk}_ARCH_${arch}_PATH}")
+    endif()
   endif()
 
   if("${sdk}" IN_LIST SWIFT_APPLE_PLATFORMS)
@@ -507,6 +509,8 @@ function(_compile_swift_files
       set(interface_file_static "${module_base_static}.swiftinterface")
       list(APPEND swift_module_flags
            "-emit-module-interface-path" "${interface_file}")
+      # list(APPEND swift_module_flags
+      #      "-emit-module-interface-path" "${interface_file_static}")
     endif()
 
     if (NOT SWIFTFILE_IS_STDLIB_CORE)
@@ -675,6 +679,37 @@ function(_compile_swift_files
     # over '-I' in this case.
   endif()
 
+  if (SWIFTFILE_SDK STREQUAL "LIBNX")
+    swift_libnx_includes("LIBNX_SWIFT_DKA64_INCLUDES")
+    foreach(path IN LISTS LIBNX_SWIFT_DKA64_INCLUDES)
+      list(APPEND swift_flags "-I" "${path}")
+    endforeach()
+    list(APPEND swift_flags "-I" "${SWIFT_LIBNX_DEVKITPRO_PATH}/libnx/include")
+
+    list(APPEND swift_flags "-Xcc" "-ftls-model=local-exec")
+    list(APPEND swift_flags "-Xcc" "-mno-tls-direct-seg-refs")
+    list(APPEND swift_flags "-Xcc" "-Qunused-arguments")
+    list(APPEND swift_flags "-Xcc" "-Xclang" "-Xcc" "-target-feature")
+    list(APPEND swift_flags "-Xcc" "-Xclang" "-Xcc" "+read-tp-soft")
+
+    list(APPEND swift_flags "-D" "__SWITCH__")  # os(libnx) generates a warning on mainline toolchains, so add this define too
+
+    list(APPEND swift_flags "-Xcc" "-D__SWITCH__")
+    list(APPEND swift_flags "-Xcc" "-D__DEVKITA64__")
+
+    list(APPEND swift_flags "-Xcc" "-D_POSIX_C_SOURCE=200809")
+    list(APPEND swift_flags "-Xcc" "-D_GNU_SOURCE")
+    list(APPEND swift_flags "-Xcc" "-D__unix__")
+    list(APPEND swift_flags "-Xcc" "-D__linux__")
+
+    list(APPEND swift_flags "-Xcc" "-nostdinc")
+    list(APPEND swift_flags "-Xcc" "-nostdinc++")
+
+    list(APPEND swift_flags "-Xcc" "-fno-blocks")  # unistd.h contains __block which clashes with the __block attribute
+
+    list(APPEND swift_flags "-v")
+  endif()
+
   if(XCODE)
     # HACK: work around an issue with CMake Xcode generator and the Swift
     # driver.
@@ -785,6 +820,17 @@ function(_compile_swift_files
           "${swift_compiler_tool}" "-emit-module" "-o" "${module_file}"
           "-avoid-emit-module-source-info"
           ${swift_flags} ${swift_module_flags} "@${file_path}"
+        COMMAND
+          "${CMAKE_COMMAND}" "-E" "remove" "-f" ${module_outputs_static}
+        COMMAND
+          "${CMAKE_COMMAND}" "-E" "make_directory" ${module_dir_static}
+          ${specific_module_dir_static}
+        COMMAND
+          "${CMAKE_COMMAND}" "-E" "copy" ${module_file} ${module_file_static}
+        COMMAND
+          "${CMAKE_COMMAND}" "-E" "copy" ${module_doc_file} ${module_doc_file_static}
+        COMMAND
+          "${CMAKE_COMMAND}" "-E" "copy" ${interface_file} ${interface_file_static}
         ${command_touch_module_outputs}
         OUTPUT ${module_outputs}
         DEPENDS
@@ -798,6 +844,8 @@ function(_compile_swift_files
     if(SWIFTFILE_STATIC)
       add_custom_command_target(
         module_dependency_target_static
+        COMMAND
+          "${CMAKE_COMMAND}" "-E" "remove" "-f" ${module_outputs_static}
         COMMAND
           "${CMAKE_COMMAND}" "-E" "make_directory" ${module_dir_static}
           ${specific_module_dir_static}

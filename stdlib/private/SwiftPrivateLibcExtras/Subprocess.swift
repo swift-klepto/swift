@@ -20,7 +20,8 @@ import CRT
 import WinSDK
 #endif
 
-#if !os(WASI)
+#if !os(WASI) || !os(libnx)
+// No signals support on libnx.
 // No signals support on WASI yet, see https://github.com/WebAssembly/WASI/issues/166.
 internal func _signalToString(_ signal: Int) -> String {
   switch CInt(signal) {
@@ -148,6 +149,15 @@ public func waitProcess(_ process: HANDLE) -> ProcessTerminationStatus {
     return .signal(Int(status))
   }
   return .exit(Int(status))
+}
+#elseif os(libnx)
+// libnx doesn't support child processes
+public func spawnChild(_ args: [String])
+  -> (pid: pid_t, stdinFD: CInt, stdoutFD: CInt, stderrFD: CInt) {
+  fatalError("\(#function) is not supported on libnx")
+}
+public func posixWaitpid(_ pid: pid_t) -> ProcessTerminationStatus {
+  fatalError("\(#function) is not supported on libnx")
 }
 #elseif os(WASI)
 // WASI doesn't support child processes
@@ -401,7 +411,7 @@ public func spawnChild(_ args: [String])
   return (pid, childStdin.writeFD, childStdout.readFD, childStderr.readFD)
 }
 
-#if !os(Android) && !os(Haiku)
+#if !os(Android) && !os(Haiku) && !os(libnx)
 #if os(Linux)
 internal func _make_posix_spawn_file_actions_t()
   -> _stdlib_posix_spawn_file_actions_t {

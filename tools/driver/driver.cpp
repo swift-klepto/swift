@@ -98,7 +98,7 @@ static bool shouldRunAsSubcommand(StringRef ExecName,
   // If we are not run as 'swift', don't do anything special. This doesn't work
   // with symlinks with alternate names, but we can't detect 'swift' vs 'swiftc'
   // if we try and resolve using the actual executable path.
-  if (ExecName != "swift")
+  if (ExecName != "swift" && ExecName != "klepto")
     return false;
 
   // If there are no program arguments, always invoke as normal.

@@ -362,6 +362,10 @@ def apply_default_arguments(toolchain, args):
             args.stdlib_deployment_targets.append(
                 StdlibDeploymentTarget.Android.x86_64.name)
 
+    if args.libnx:
+        args.stdlib_deployment_targets.append(
+            StdlibDeploymentTarget.libnx.aarch64.name)
+
     # Infer platform flags from manually-specified configure targets.
     # This doesn't apply to Darwin platforms, as they are
     # already configured. No building without the platform flag, though.
@@ -695,6 +699,19 @@ class BuildScriptInvocation(object):
             impl_args += [
                 "--android-deploy-device-path",
                 args.android_deploy_device_path,
+            ]
+
+        if args.libnx:
+            if not args.devkitpro_path or not args.libnx_icu_uc or not args.libnx_icu_uc_include or not args.libnx_icu_i18n or not args.libnx_icu_i18n_include or not args.libnx_icu_data:
+                fatal_error(
+                    "Missing parameters for libnx.")
+            impl_args += [
+                "--devkitpro-path", args.devkitpro_path,
+                "--libnx-icu-uc", args.libnx_icu_uc,
+                "--libnx-icu-uc-include", args.libnx_icu_uc_include,
+                "--libnx-icu-i18n", args.libnx_icu_i18n,
+                "--libnx-icu-i18n-include", args.libnx_icu_i18n_include,
+                "--libnx-icu-data", args.libnx_icu_data,
             ]
 
         if platform.system() == 'Darwin':

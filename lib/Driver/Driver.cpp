@@ -103,6 +103,7 @@ void Driver::parseDriverKind(ArrayRef<const char *> Args) {
   .Case("swift-indent", DriverKind::SwiftIndent)
   .Case("swift-symbolgraph-extract", DriverKind::SymbolGraph)
   .Case("swift-api-extract", DriverKind::APIExtract)
+  .Case("klepto", DriverKind::Interactive)
   .Default(None);
   
   if (Kind.hasValue())
@@ -332,7 +333,8 @@ Driver::buildToolChain(const llvm::opt::InputArgList &ArgList) {
       return std::make_unique<toolchains::Cygwin>(*this, target);
     return std::make_unique<toolchains::Windows>(*this, target);
   case llvm::Triple::Haiku:
-    return std::make_unique<toolchains::GenericUnix>(*this, target);
+  case llvm::Triple::UnknownOS:
+    return std::make_unique<toolchains::Libnx>(*this, target);
   case llvm::Triple::WASI:
     return std::make_unique<toolchains::GenericUnix>(*this, target);
   default:

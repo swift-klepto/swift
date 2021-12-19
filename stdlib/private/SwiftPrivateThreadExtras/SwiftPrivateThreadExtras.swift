@@ -67,7 +67,12 @@ public typealias ThreadHandle = HANDLE
 #else
 public typealias ThreadHandle = pthread_t
 
-#if os(Linux) || os(Android)
+#if os(libnx)
+// pthread_t is a pointer to an opaque struct __pthread_t
+// defined by newlib, provided by libnx newlib.c
+// so there is no way to "make" a pthread_t, instead we just
+// use a plain opaque pointer
+#elseif os(Linux) || os(Android)
 internal func _make_pthread_t() -> pthread_t {
   return pthread_t()
 }
@@ -99,7 +104,12 @@ public func _stdlib_thread_create_block<Argument, Result>(
     return (0, ThreadHandle(bitPattern: threadID))
   }
 #else
+#if os(libnx)
+  // See comment above for an explanation
+  var threadID: OpaquePointer? = nil
+#else
   var threadID = _make_pthread_t()
+#endif
   let result = pthread_create(&threadID, nil,
     { invokeBlockContext($0) }, contextAsVoidPointer)
   if result == 0 {
